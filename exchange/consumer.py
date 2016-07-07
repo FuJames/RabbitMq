@@ -1,15 +1,14 @@
 import pika
-
+credentials = pika.PlainCredentials('guest', 'guest')
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
+        host='10.21.236.94',port=5672, credentials=credentials))
 channel = connection.channel()
 
-result = channel.queue_declare(exclusive=True)
+result = channel.queue_declare(queue='report_impt_queue')
 queue_name = result.method.queue
 
-channel.queue_bind(exchange='logs2',
-                   queue=queue_name,
-                   routing_key='black')
+channel.queue_bind(exchange='report_impt_exchange',
+                   queue=queue_name)
 
 print(' [*] Waiting for logs. To exit press CTRL+C')
 
